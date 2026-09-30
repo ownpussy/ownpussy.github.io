@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="PULSE"/>
+<meta name="theme-color" content="#070708"/>
+<title>PULSE</title>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<div class="device"><div class="app">
+<div class="flash"></div>
+<div class="status"><span id="clock">9:41</span><span class="live"><i class="dot"></i> PULSE</span><span>iOS</span></div>
+<div class="header"><div><div class="brand">PULSE</div><div class="sub">OSINT · HEAT · FIB</div></div><div class="fng">CRYPTO F&amp;G<br><b>71 GREED</b></div></div>
+<div class="chips">
+<button class="chip on" data-f="ALL">ALL</button>
+<button class="chip" data-f="STOCK">STOCKS</button>
+<button class="chip" data-f="ETF">ETFS</button>
+<button class="chip" data-f="CRYPTO">CRYPTO</button>
+</div>
+<div class="screen">
+<div class="legend"><span class="sw"><i style="background:#ff4d2e"></i>Hot</span><span class="sw"><i style="background:#ff8a3d"></i>Warm</span><span class="sw"><i style="background:#c8c2a8"></i>Flat</span><span class="sw"><i style="background:#4aa3ff"></i>Cold</span><span class="sw"><i style="background:#9fd8ff"></i>Ice</span></div>
+<div id="list"></div>
+</div>
+<nav class="tabbar">
+<button class="tab on" data-tab="heat">HEAT</button>
+<button class="tab" data-tab="scan">SCAN</button>
+<button class="tab" data-tab="fib">FIB</button>
+<button class="tab" data-tab="osint">OSINT</button>
+</nav>
+<div class="home-ind"></div>
+<div class="sheet" id="sheet"><div class="panel" id="panel"></div></div>
+</div></div>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body></html>

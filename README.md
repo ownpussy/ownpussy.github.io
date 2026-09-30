@@ -1,2 +1,5 @@
-# ownpussy.github.io
-PULSE — iOS heat desk for stocks, crypto, ETFs
+# PULSE
+
+Open on iPhone: https://ownpussy.github.io/
+
+Safari → Share → Add to Home Screen.
