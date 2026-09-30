@@ -1,6 +1,13 @@
 (function(){
 const ASSETS=window.PULSE_DATA||[];
 const CIK={NVDA:"0001045810",AAPL:"0000320193",TSLA:"0001318605",AMZN:"0001018723",MSFT:"0000789019",META:"0001326801",GOOGL:"0001652044",AMD:"0000002488",AVGO:"0001730168",PLTR:"0001321655"};
+const CLUSTERS=[
+  {s:"GME",n:"GameStop",ins:4,v:"+$59.0M"},
+  {s:"PAM",n:"Pampa Energy",ins:2,v:"+$10.8M"},
+  {s:"INBX",n:"Inhibrx",ins:2,v:"+$3.9M"},
+  {s:"INR",n:"Infinity Natural",ins:2,v:"+$0.7M"},
+  {s:"PLAY",n:"Dave & Buster's",ins:2,v:"+$0.2M"}
+];
 const state={filter:"ALL",tab:"heat"};
 const $=id=>document.getElementById(id);
 function heatLabel(h){
@@ -65,25 +72,44 @@ function renderFib(){
 function renderOsint(){
   const hot=ASSETS.filter(a=>a.heat>=80).map(a=>a.s).join("  ");
   const ice=ASSETS.filter(a=>a.heat<40).map(a=>a.s).join("  ")||"—";
-  const btc=ASSETS.find(a=>a.s==="BTC"), tlt=ASSETS.find(a=>a.s==="TLT"), smh=ASSETS.find(a=>a.s==="SMH"), gld=ASSETS.find(a=>a.s==="GLD");
   $("list").innerHTML=`<div class="osint">
+    <div class="block"><h4>HOW TO READ SIGNS</h4><p>Each source answers one question. If heat says BUY and signs agree, size up. If they fight, sit.</p></div>
+    <div class="block"><h4>EXPANSION · 8-K / GROWTH</h4><p><span class="tag ck">CHECK</span> Apify expansion scraper watches 8-Ks and news for hire / buy / launch / partner. On a name: open 8-K. New plant, deal, or product = lift. Lawsuit, restatement, CEO exit = drag.</p></div>
+    <div class="block"><h4>BARCHART · TAPE + OPINION</h4><p><span class="tag ck">CHECK</span> Barchart is the quote + technical + analyst page. Use it to confirm volume and whether the street is already long. Do not buy a cold name because an opinion is green.</p></div>
+    <div class="block"><h4>FT MARKETS · CONTEXT</h4><p><span class="tag ck">CHECK</span> FT is the grown-up tape: what the name owns, sector mix, and the story the Street is selling. Good for ETFs. Not a trigger.</p></div>
+    <div class="block"><h4>SENTISENSE · MOOD</h4><p><span class="tag ${71>=60?"up":"dn"}">${71>=60?"LIFT":"DRAG"}</span> News + social mood. Crypto Fear &amp; Greed is 71 GREED. Greed supports trend-following. It does not mean buy a broken chart.</p></div>
+    <div class="block"><h4>SEC EDGAR · THE FILING</h4><p><span class="tag ck">CHECK</span> 8-K = something happened. 10-Q / 10-K = the books. Form 4 = insiders trading their own stock. No filing is a buy button by itself.</p></div>
+    <div class="block"><h4>OPENINSIDER · CLUSTER BUYS</h4><p>Several officers buying the same stock in a short window is the clean insider tell. One 10% holder selling is usually noise. Latest clusters:</p>
+      ${CLUSTERS.map(c=>`<a class="cluster" href="http://openinsider.com/${c.s}" target="_blank" rel="noopener"><b>${c.s}</b><span>${c.ins} insiders · ${c.v}</span></a>`).join("")}
+      <p style="margin-top:10px"><a class="btn" href="http://openinsider.com/latest-cluster-buys" target="_blank" rel="noopener">OPEN CLUSTER LIST</a></p>
+    </div>
+    <div class="block"><h4>INSIDER SCANNER · FORM 4</h4><p><span class="tag ck">CHECK</span> Same data as OpenInsider, filtered: officer buy ≥ $25k, skip 10b5-1 auto-sells when you can. Cluster + officer buy + HOT trend = the only stack worth sizing.</p></div>
     <div class="block"><h4>MARKET TELL</h4><p>Hot: ${hot}.<br>Cold: ${ice}.</p></div>
-    <div class="block"><h4>CRYPTO FEAR & GREED</h4><p>Live index in the header. Greed favors IBIT / ETHA trend. Do not invent a dip.</p></div>
-    <div class="block"><h4>RATES — TLT ${fmt(tlt.p)}</h4><p>${tlt.p<tlt.s20?"Bonds are cold. Firm yields. Do not treat every dip in duration names as a gift.":"Bonds stabilizing. Risk assets get a tailwind."}</p></div>
-    <div class="block"><h4>AI / SEMIS — SMH ${fmt(smh.p)}</h4><p>${smh.p>=smh.s20?"Complex is hot. NVDA, AMD, AVGO follow this tape.":"Semi leadership cracked. Cut size."}</p></div>
-    <div class="block"><h4>GOLD — GLD ${fmt(gld.p)}</h4><p>${gld.p<gld.s20?"Hedge bid fading. Risk-on can persist.":"Gold bid = insurance demand. Size risk assets down."}</p></div>
-    <div class="block"><h4>BTC ${fmt(btc.p)}</h4><p>IBIT is the listed proxy. Crypto beta only if BTC holds Fib 0.382.</p></div>
-    <div class="block"><h4>SEC / EDGAR</h4><p>Open a name, tap FILINGS. Watch 8-K, 10-Q/10-K, Form 4. No filing is a buy button.</p></div>
-    <div class="block"><h4>RULES</h4><p>1. HOT + 20>50 + price>20 = buy bias.<br>2. Lost 20-day and 50-day = do not buy.<br>3. Buy pullbacks to Fib 0.382 / 0.5 in an uptrend.<br>4. Never buy ICE because it looks cheap.</p></div>
-    <p class="note">Crypto prints live. Stocks/ETFs are the last public snapshot. Not advice.</p></div>`;
+    <div class="block"><h4>THE STACK — KEEP IT DUMB</h4><p>1. Heat first.<br>2. Fib tells you where to buy it.<br>3. Expansion / 8-K tells you if the company is growing or breaking.<br>4. Insiders tell you if they agree with their own story.<br>5. Mood / Barchart / FT are context. Never the trigger.</p></div>
+    <p class="note">Apify actors and FTMarkets run off-phone. Here you get the public page each one is built on. Cluster list from OpenInsider 30 Sep 2026. Not advice.</p>
+  </div>`;
+}
+function linksFor(a){
+  const cik=CIK[a.s];
+  const edgar=cik?`https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cik}&owner=include&count=10`:`https://www.sec.gov/edgar/search/#/q=${encodeURIComponent(a.s)}`;
+  const eightk=cik?`https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cik}&type=8-K&dateb=&owner=include&count=10`:`https://www.sec.gov/edgar/search/#/q=%22${encodeURIComponent(a.s)}%22%20%228-K%22`;
+  return [
+    ["8-K EXPAND", eightk],
+    ["EDGAR", edgar],
+    ["INSIDERS", "http://openinsider.com/"+encodeURIComponent(a.s)],
+    ["CLUSTER", "http://openinsider.com/latest-cluster-buys"],
+    ["BARCHART", "https://www.barchart.com/stocks/quotes/"+encodeURIComponent(a.s)+"/overview"],
+    ["FT MARKETS", "https://markets.ft.com/data/search?query="+encodeURIComponent(a.s)],
+    ["SENTI MOOD", "https://app.sentisense.ai/indexes/market-mood"],
+    ["CHART", "https://finance.yahoo.com/quote/"+encodeURIComponent(a.raw)]
+  ];
 }
 function openSheet(sym){
   const a=ASSETS.find(x=>x.s===sym); if(!a) return;
   const sig=signal(a), fac=factors(a), hi=a.hi, lo=a.lo, span=hi-lo||1;
   const fibHTML=Object.entries(a.fib).map(([k,v])=>`<div class="fib-line" style="top:${((hi-v)/span)*100}%"><b>${k}</b><span>${fmt(v)}</span></div>`).join("");
   const py=Math.max(4,Math.min(96,((hi-a.p)/span)*100));
-  const cik=CIK[a.s];
-  const edgar=cik?`https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${cik}&owner=include&count=10`:`https://www.sec.gov/edgar/search/#/q=${encodeURIComponent(a.s)}`;
+  const btns=linksFor(a).map(([lab,href])=>`<a class="btn" href="${href}" target="_blank" rel="noopener">${lab}</a>`).join("");
   $("sheet").classList.add("show");
   $("panel").innerHTML=`<div class="handle"></div><div class="d-top"><div><div class="d-sym">${a.s}</div><div class="d-nm">${a.t} · ${a.n}</div></div><button class="close" id="closeSheet">CLOSE</button></div>
     <div class="bigpx">${fmt(a.p)}</div>
@@ -92,8 +118,8 @@ function openSheet(sym){
     <div class="verdict" style="border-color:${sig.c}44"><div class="g">SIMPLE CALL</div><div class="s" style="color:${sig.c}">${sig.k}</div><p>${sig.why}</p></div>
     <div class="section"><h3>Fibonacci — 60 day swing</h3><div class="fib">${fibHTML}<div class="price-mark" style="top:${py}%"><em>NOW ${fmt(a.p)}</em></div></div></div>
     <div class="section"><h3>What moves it</h3><div class="factors">${fac.map(f=>`<div class="factor"><span class="tag ${f.dir}">${f.dir==="up"?"LIFT":"DRAG"}</span><span>${f.t}</span></div>`).join("")}</div></div>
-    <div class="btns"><a class="btn" href="${edgar}" target="_blank" rel="noopener">SEC FILINGS</a><a class="btn" href="https://finance.yahoo.com/quote/${encodeURIComponent(a.raw)}" target="_blank" rel="noopener">CHART</a></div>
-    <p class="note">Heat is a filter from trend, averages, range, and the day. Not a crystal ball.</p>`;
+    <div class="section"><h3>Open the sources</h3><div class="btns">${btns}</div></div>
+    <p class="note">8-K = expansion/break. Form 4 / OpenInsider = insiders. Barchart / FT / Senti = context. Heat stays the trigger.</p>`;
   $("closeSheet").onclick=closeSheet;
 }
 function closeSheet(){ $("sheet").classList.remove("show"); }
