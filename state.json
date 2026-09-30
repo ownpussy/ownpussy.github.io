@@ -1,0 +1,11 @@
+{
+  "paper": true,
+  "halted": false,
+  "equity": 2000.0,
+  "equity_open": 2000.0,
+  "win_rate_20": 0.5,
+  "regime": "BULL",
+  "trades": [],
+  "day": null,
+  "model_ready": false
+}

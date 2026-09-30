@@ -1,0 +1,44 @@
+name: chimera-paper
+on:
+  schedule:
+    - cron: "20 14 * * 1-5"
+  workflow_dispatch:
+  push:
+    paths:
+      - "chimera/**"
+      - "requirements.txt"
+      - ".github/workflows/trading_bot.yml"
+jobs:
+  desk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas numpy yfinance requests lightgbm scikit-learn hmmlearn joblib
+      - name: retrain sunday-ish
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '20 14 * * 1'
+        run: python chimera/retrain_model.py
+        continue-on-error: true
+      - name: paper desk
+        env:
+          PAPER: "1"
+          ALPACA_KEY: ${{ secrets.ALPACA_KEY }}
+          ALPACA_SECRET: ${{ secrets.ALPACA_SECRET }}
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          FINNHUB_KEY: ${{ secrets.FINNHUB_KEY }}
+        run: python chimera/main.py
+      - name: publish pulse
+        run: |
+          git config user.name "chimera-bot"
+          git config user.email "chimera@users.noreply.github.com"
+          git add pulse_data.json state.json || true
+          git diff --cached --quiet || git commit -m "pulse snapshot $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push
