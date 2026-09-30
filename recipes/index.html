@@ -13,7 +13,7 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:#0D0D0D;color:var(--ink);font:16px/1.45 "DM Sans",system-ui,sans-serif;padding-bottom:96px;min-height:100dvh}
 header{padding:22px 20px 8px;position:sticky;top:0;background:linear-gradient(180deg,#0D0D0D 70%,transparent);z-index:5}
-h1{font-family:Syne,sans-serif;font-size:28px;margin:0;text-transform:none}
+h1{font-family:Syne,sans-serif;font-size:28px;margin:0}
 .sub{color:var(--mute);font-size:13px;margin-top:4px}
 main{padding:6px 18px 28px}
 input,select{width:100%;background:#1A1A1A;border:1px solid var(--line);border-radius:14px;color:#fff;padding:13px 14px;font:16px "DM Sans";margin:6px 0}
@@ -32,6 +32,8 @@ input,select{width:100%;background:#1A1A1A;border:1px solid var(--line);border-r
 .done{text-decoration:line-through;color:var(--mute)}
 .price{color:var(--mint);font-weight:800}
 .muted{color:var(--mute);font-size:13px}
+#reader{width:100%;border-radius:16px;overflow:hidden;background:#111;min-height:220px;margin:8px 0}
+#reader video,#reader canvas{width:100%!important;border-radius:16px}
 nav{position:fixed;left:10px;right:10px;bottom:10px;background:#141414;border:1px solid var(--line);border-radius:24px;display:flex;padding:8px 4px calc(8px + env(safe-area-inset-bottom))}
 nav button{flex:1;background:none;border:0;color:var(--mute);font:11px/1.2 "DM Sans";font-weight:700}
 nav button.on{color:var(--mint)}
@@ -50,6 +52,7 @@ nav button.on{color:var(--mint)}
   <button data-tab="trends">Body</button>
   <button data-tab="settings">Me</button>
 </nav>
-<script src="app.js?v=7"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="app.js?v=8"></script>
 </body>
 </html>
