@@ -4,24 +4,22 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="SmartCart"/>
 <meta name="theme-color" content="#0D0D0D"/>
-<title>Aisle</title>
+<title>SmartCart kitchen</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Syne:wght@600;700&display=swap" rel="stylesheet"/>
 <style>
-:root{
-  --bg:#0D0D0D; --paper:#161616; --ink:#F2F7F5; --mute:#8AA39A;
-  --mint:#3EB489; --teal:#00CED1; --line:#2A2A2A;
-}
+:root{--bg:#0D0D0D;--paper:#161616;--ink:#F2F7F5;--mute:#8AA39A;--mint:#3EB489;--teal:#00CED1;--line:#2A2A2A}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:#0D0D0D;color:var(--ink);font:16px/1.45 "DM Sans",system-ui,sans-serif;padding-bottom:96px;min-height:100dvh}
 header{padding:22px 20px 8px;position:sticky;top:0;background:linear-gradient(180deg,#0D0D0D 70%,transparent);z-index:5}
-h1{font-family:Syne,sans-serif;font-size:32px;margin:0;letter-spacing:.4px}
+h1{font-family:Syne,sans-serif;font-size:28px;margin:0}
 .sub{color:var(--mute);font-size:13px;margin-top:4px}
 main{padding:6px 18px 28px}
-input,select,textarea{width:100%;background:#1A1A1A;border:1px solid var(--line);border-radius:14px;color:#fff;padding:13px 14px;font:16px "DM Sans";margin:6px 0}
+input,select{width:100%;background:#1A1A1A;border:1px solid var(--line);border-radius:14px;color:#fff;padding:13px 14px;font:16px "DM Sans";margin:6px 0}
 .btn{background:var(--mint);color:#04140C;border:0;border-radius:999px;padding:14px 16px;width:100%;font-weight:700;font-size:15px;margin:8px 0}
 .ghost{background:transparent;border:1.5px solid var(--line);color:#fff;border-radius:999px;padding:12px;width:100%;margin:6px 0;font-weight:700}
-.gold{background:transparent;border-color:var(--teal);color:var(--teal)}
+.gold{border-color:var(--teal);color:var(--teal)}
 .card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:16px;margin:12px 0}
 .hero{width:100%;height:160px;object-fit:cover;border-radius:14px;background:#1F1F1F;margin-bottom:10px}
 .meta{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
@@ -41,8 +39,8 @@ nav button.on{color:var(--mint)}
 </head>
 <body>
 <header>
-  <h1 id="title">Aisle</h1>
-  <div class="sub" id="subtitle">Recipes · list · King Soopers 80602</div>
+  <h1 id="title">SmartCart kitchen</h1>
+  <div class="sub" id="subtitle">King Soopers prices · 136th & Quebec</div>
 </header>
 <main id="app"></main>
 <nav>
@@ -52,6 +50,6 @@ nav button.on{color:var(--mint)}
   <button data-tab="trends">Body</button>
   <button data-tab="settings">Me</button>
 </nav>
-<script src="app.js?v=5"></script>
+<script src="app.js?v=6"></script>
 </body>
 </html>
