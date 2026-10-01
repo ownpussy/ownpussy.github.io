@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html lang="en">
+<head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -7,74 +8,86 @@
 <meta name="theme-color" content="#0b0e11"/>
 <title>Desk</title>
 <style>
-:root{--bg:#0b0e11;--panel:#161a1e;--line:#2b3139;--ink:#eaecef;--dim:#848e9c;--buy:#0ecb81;--sell:#f6465d;--safe-top:env(safe-area-inset-top,0px);--safe-bot:env(safe-area-inset-bottom,0px);--vh:100dvh}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,sans-serif}
-.app{height:var(--vh);display:flex;flex-direction:column;background:var(--bg)}
-.bar{padding:calc(8px + var(--safe-top)) 12px 6px;display:flex;justify-content:space-between;align-items:center;background:#0b0e11;border-bottom:1px solid var(--line);font-size:13px}
-.bar b{font-weight:650}.live{color:var(--buy);font-size:12px}.ghost{border:0;background:transparent;color:var(--dim);font-size:13px}
-.assets,.views{display:flex;gap:0;overflow:auto;border-bottom:1px solid var(--line);background:#0b0e11}
+:root{--bg:#0b0e11;--panel:#161a1e;--line:#2b3139;--ink:#eaecef;--dim:#848e9c;--buy:#0ecb81;--sell:#f6465d;--warm:#f0b90b;--safe-top:env(safe-area-inset-top,0px);--safe-bot:env(safe-area-inset-bottom,0px);--vh:100dvh}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+.app{min-height:var(--vh);display:flex;flex-direction:column;background:var(--bg)}
+.bar{padding:calc(10px + var(--safe-top)) 12px 8px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);font-size:14px}
+.live{color:var(--buy);font-size:12px}
+button.ghost{border:0;background:transparent;color:var(--dim);font-size:14px}
+.assets,.views{display:flex;overflow:auto;border-bottom:1px solid var(--line)}
 .assets button,.views button{border:0;background:transparent;color:var(--dim);padding:10px 12px;font-size:13px;white-space:nowrap}
-.assets button.on,.views button.on{color:var(--ink);box-shadow:inset 0 -2px 0 var(--buy)}
-.search{padding:8px 12px;background:#0b0e11}.search input{width:100%;border:0;background:var(--panel);color:var(--ink);border-radius:6px;padding:10px 12px;font-size:16px}
-.cols{display:grid;grid-template-columns:1.3fr .8fr .7fr;padding:6px 12px;color:var(--dim);font-size:11px}
-.screen{flex:1;overflow:auto;padding-bottom:calc(10px + var(--safe-bot))}
-.mkt{width:100%;display:grid;grid-template-columns:1.3fr .8fr .7fr;gap:6px;align-items:center;padding:11px 12px;border:0;border-bottom:1px solid #1e2329;background:transparent;color:inherit;text-align:left}
-.mkt small{display:block;color:var(--dim);font-size:11px}.r{text-align:right;font-variant-numeric:tabular-nums}
-.buy{color:var(--buy)}.sell{color:var(--sell)}.pill{display:inline-block;min-width:64px;text-align:center;border-radius:4px;padding:4px 6px;color:#07110c;font-weight:650;font-size:12px}
-.pill.up{background:var(--buy)}.pill.dn{background:var(--sell);color:#fff}
-.sheet{position:fixed;inset:0;background:var(--bg);overflow:auto;padding:calc(10px + var(--safe-top)) 12px calc(16px + var(--safe-bot))}
-.h{font-size:28px;font-weight:650;font-variant-numeric:tabular-nums}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0}.grid div{background:var(--panel);border-radius:6px;padding:8px}.grid b{display:block;font-size:13px}.grid span{color:var(--dim);font-size:11px}
-.fill{display:grid;grid-template-columns:1.4fr .7fr .7fr .8fr;gap:6px;padding:8px 0;border-bottom:1px solid #1e2329;font-size:13px}
+.assets button.on,.views button.on{color:#fff;box-shadow:inset 0 -2px 0 var(--buy)}
+.search{padding:8px 12px}
+.search input{width:100%;border:0;background:var(--panel);color:#fff;border-radius:6px;padding:10px 12px;font-size:16px}
+.cols{display:grid;grid-template-columns:1.4fr .8fr .7fr;padding:6px 12px;color:var(--dim);font-size:11px}
+.screen{flex:1;padding-bottom:calc(12px + var(--safe-bot))}
+.mkt{width:100%;display:grid;grid-template-columns:1.4fr .8fr .7fr;gap:6px;align-items:center;padding:12px;border:0;border-bottom:1px solid #1e2329;background:transparent;color:inherit;text-align:left}
+.mkt small{display:block;color:var(--dim);font-size:11px}
+.r{text-align:right;font-variant-numeric:tabular-nums}
+.buy{color:var(--buy)}.sell{color:var(--sell)}
+.pill{display:inline-block;min-width:68px;text-align:center;border-radius:4px;padding:4px 6px;font-weight:650;font-size:12px}
+.up{background:var(--buy);color:#07110c}.dn{background:var(--sell);color:#fff}
+.note{padding:8px 12px;color:var(--dim);font-size:12px;line-height:1.4}
+.sheet{position:fixed;inset:0;background:var(--bg);overflow:auto;padding:calc(10px + var(--safe-top)) 12px calc(16px + var(--safe-bot));z-index:5}
+.h{font-size:30px;font-weight:650;font-variant-numeric:tabular-nums}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0}
+.grid div{background:var(--panel);border-radius:6px;padding:8px}
+.grid b{display:block;font-size:13px}
+.grid span{color:var(--dim);font-size:11px}
+.fill{display:grid;grid-template-columns:1.4fr .7fr .7fr .7fr;gap:6px;padding:8px 0;border-bottom:1px solid #1e2329;font-size:13px}
 svg{width:100%;height:150px;background:var(--panel);border-radius:6px}
-</style></head><body><div class="app">
-<div class="bar"><b>Desk</b><span class="live" id="src">Live</span><button class="ghost" id="refresh">Refresh</button></div>
-<div class="assets" id="assets"></div>
-<div class="views" id="views"></div>
-<div class="search"><input id="q" placeholder="Search symbol" autocomplete="off"/></div>
-<div class="cols"><span>Name</span><span class="r">Last / $</span><span class="r">Change</span></div>
-<div class="screen" id="screen"></div></div><div id="sheet"></div>
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="bar"><b>Desk</b><span class="live" id="src">Ready</span><button class="ghost" id="refresh" type="button">Refresh</button></div>
+  <div class="assets" id="assets"></div>
+  <div class="views" id="views"></div>
+  <div class="search"><input id="q" placeholder="Search symbol or name" autocomplete="off"/></div>
+  <div class="cols"><span>Name</span><span class="r">Last / $</span><span class="r">Change</span></div>
+  <div class="screen" id="screen"><div class="note">Loading the book.</div></div>
+</div>
+<div id="sheet"></div>
 <script>
 const PAIRS=["BTC-USD","ETH-USD","SOL-USD","XRP-USD","DOGE-USD","LINK-USD","LTC-USD","AVAX-USD"];
 const NAMES={BTC:"Bitcoin",ETH:"Ether",SOL:"Solana",XRP:"XRP",DOGE:"Dogecoin",LINK:"Chainlink",LTC:"Litecoin",AVAX:"Avalanche"};
-const BOOKS={
- STOCKS:[{s:"NVDA",n:"NVIDIA",p:227.21,open:228.86,hi:234.76,lo:190},{s:"AAPL",n:"Apple",p:329.4,open:338.4,hi:345.34,lo:300},{s:"MSFT",n:"Microsoft",p:508.96,open:509.2,hi:519.4,lo:373},{s:"META",n:"Meta",p:738.79,open:715.6,hi:779.82,lo:524},{s:"AVGO",n:"Broadcom",p:355.1,open:349.6,hi:432.73,lo:336},{s:"AMZN",n:"Amazon",p:246.67,open:246.1,hi:287.2,lo:226}],
- ETFS:[{s:"SPY",n:"S&P 500",p:572.4,open:570.1,hi:575,lo:540},{s:"QQQ",n:"Nasdaq 100",p:498.2,open:496.4,hi:505,lo:450},{s:"IWM",n:"Russell 2000",p:218.6,open:219.4,hi:228,lo:190},{s:"SMH",n:"Semis",p:268.1,open:266.4,hi:280,lo:210},{s:"IBIT",n:"Bitcoin ETF",p:47.33,open:47.1,hi:49.22,lo:34.8},{s:"GLD",n:"Gold",p:242.8,open:241.9,hi:248,lo:210}],
- IRA:[{s:"SPY",n:"Core equity 50%",p:572.4,open:570.1,hi:575,lo:540},{s:"BND",n:"Bonds 30%",p:74.2,open:74.3,hi:76,lo:70},{s:"IBIT",n:"Bitcoin sleeve 10%",p:47.33,open:47.1,hi:49.22,lo:34.8},{s:"VNQ",n:"REIT sleeve 10%",p:92.4,open:92.8,hi:98,lo:78}],
- RE:[{s:"VNQ",n:"REIT index",p:92.4,open:92.8,hi:98,lo:78},{s:"O",n:"Realty Income",p:58.2,open:58.4,hi:64,lo:50},{s:"PLD",n:"Prologis",p:118.6,open:117.9,hi:126,lo:98},{s:"AMT",n:"American Tower",p:214.3,open:215.1,hi:230,lo:170}]
-};
-const WHO=[{s:"META",who:"Zuckerberg",role:"CEO",side:"SELL",qty:27474,px:777.44,dt:"09-24"},{s:"META",who:"Olivan",role:"COO",side:"SELL",qty:1575,px:749.82,dt:"09-28"},{s:"META",who:"Cox",role:"CPO",side:"SELL",qty:40000,px:712.76,dt:"09-21"},{s:"NVDA",who:"Stevens",role:"Dir",side:"SELL",qty:1366000,px:219.73,dt:"09-18"},{s:"NVDA",who:"Kress",role:"CFO",side:"SELL",qty:34918,px:219.05,dt:"09-17"},{s:"MSFT",who:"Hood",role:"CFO",side:"SELL",qty:41674,px:498.27,dt:"09-14"},{s:"AVGO",who:"Samueli",role:"Dir",side:"SELL",qty:702190,px:356.04,dt:"09-23"},{s:"AAPL",who:"Newstead",role:"GC",side:"SELL",qty:2399,px:340.06,dt:"09-22"},{s:"GME",who:"4 insiders",role:"Cluster",side:"BUY",qty:2683435,px:21.97,dt:"09-08"}];
-let book={},asset="CRYPTO",view="MARKETS",q="",openSym=null,sr=true;
-const $=id=>document.getElementById(id);
-function money(n){const s=n<0?"-":"+";n=Math.abs(n);if(n>=1e6)return s+"$"+(n/1e6).toFixed(1)+"M";if(n>=1e3)return s+"$"+(n/1e3).toFixed(1)+"k";return s+"$"+n.toFixed(2);}
-function qty(n){if(!n)return "—";if(n>=1e6)return (n/1e6).toFixed(2)+"M";if(n>=1e3)return (n/1e3).toFixed(1)+"k";return String(n);}
-function list(){
- let rows=asset==="CRYPTO"?Object.values(book):BOOKS[asset].map(x=>{const ch=(x.p/x.open-1)*100;return {...x,ch,gain:x.p-x.open,vol:0,src:"desk"};});
- const query=q.trim().toUpperCase();
- if(query) rows=rows.filter(x=>x.s.includes(query)||(x.n||"").toUpperCase().includes(query));
- if(view==="MOVERS") rows=rows.slice().sort((a,b)=>b.ch-a.ch);
- if(view==="LOSERS") rows=rows.slice().sort((a,b)=>a.ch-b.ch);
- return rows;
-}
+const BOOKS={STOCKS:[{s:"NVDA",n:"NVIDIA",p:227.21,open:228.86,hi:234.76,lo:190},{s:"AAPL",n:"Apple",p:329.40,open:338.40,hi:345.34,lo:300},{s:"MSFT",n:"Microsoft",p:508.96,open:509.20,hi:519.40,lo:373},{s:"META",n:"Meta",p:738.79,open:715.60,hi:779.82,lo:524},{s:"AVGO",n:"Broadcom",p:355.10,open:349.60,hi:432.73,lo:336},{s:"AMZN",n:"Amazon",p:246.67,open:246.10,hi:287.20,lo:226}],ETFS:[{s:"SPY",n:"S&P 500",p:572.40,open:570.10,hi:575,lo:540},{s:"QQQ",n:"Nasdaq 100",p:498.20,open:496.40,hi:505,lo:450},{s:"IWM",n:"Russell 2000",p:218.60,open:219.40,hi:228,lo:190},{s:"SMH",n:"Semis",p:268.10,open:266.40,hi:280,lo:210},{s:"IBIT",n:"Bitcoin ETF",p:47.33,open:47.10,hi:49.22,lo:34.8},{s:"GLD",n:"Gold",p:242.80,open:241.90,hi:248,lo:210}],IRA:[{s:"SPY",n:"Core equity 50%",p:572.40,open:570.10,hi:575,lo:540},{s:"BND",n:"Bonds 30%",p:74.20,open:74.30,hi:76,lo:70},{s:"IBIT",n:"Bitcoin sleeve 10%",p:47.33,open:47.10,hi:49.22,lo:34.8},{s:"VNQ",n:"REIT sleeve 10%",p:92.40,open:92.80,hi:98,lo:78}],RE:[{s:"VNQ",n:"REIT index",p:92.40,open:92.80,hi:98,lo:78},{s:"O",n:"Realty Income",p:58.20,open:58.40,hi:64,lo:50},{s:"PLD",n:"Prologis",p:118.60,open:117.90,hi:126,lo:98},{s:"AMT",n:"American Tower",p:214.30,open:215.10,hi:230,lo:170}]};
+const WHO=[{s:"META",who:"Mark Zuckerberg",role:"CEO",side:"SELL",qty:27474,px:777.44,dt:"09-24"},{s:"META",who:"Javier Olivan",role:"COO",side:"SELL",qty:1575,px:749.82,dt:"09-28"},{s:"META",who:"Christopher Cox",role:"CPO",side:"SELL",qty:40000,px:712.76,dt:"09-21"},{s:"NVDA",who:"Mark Stevens",role:"Director",side:"SELL",qty:1366000,px:219.73,dt:"09-18"},{s:"NVDA",who:"Colette Kress",role:"CFO",side:"SELL",qty:34918,px:219.05,dt:"09-17"},{s:"NVDA",who:"Timothy Teter",role:"GC",side:"SELL",qty:30460,px:222.80,dt:"09-21"},{s:"MSFT",who:"Amy Hood",role:"CFO",side:"SELL",qty:41674,px:498.27,dt:"09-14"},{s:"AVGO",who:"Henry Samueli",role:"Director",side:"SELL",qty:702190,px:356.04,dt:"09-23"},{s:"AAPL",who:"Jennifer Newstead",role:"GC",side:"SELL",qty:2399,px:340.06,dt:"09-22"},{s:"GME",who:"4 insiders",role:"Cluster",side:"BUY",qty:2683435,px:21.97,dt:"09-08"}];
+var book={}, asset="STOCKS", view="MARKETS", q="", openSym=null, sr=true, fib=false;
+function $(id){return document.getElementById(id);}
+function money(n){var sign=n<0?"-":"+"; n=Math.abs(n); if(n>=1e6) return sign+"$"+(n/1e6).toFixed(1)+"M"; if(n>=1e3) return sign+"$"+(n/1e3).toFixed(1)+"k"; return sign+"$"+n.toFixed(2);}
+function qty(n){if(!n) return "range"; if(n>=1e6) return (n/1e6).toFixed(2)+"M"; if(n>=1e3) return (n/1e3).toFixed(1)+"k"; return n.toLocaleString();}
+function withChange(x){var open=x.open||x.p; var ch=open?((x.p/open)-1)*100:0; return {s:x.s,n:x.n,p:x.p,open:open,hi:x.hi,lo:x.lo,vol:x.vol||0,ch:x.ch!=null?x.ch:ch,gain:x.gain!=null?x.gain:(x.p-open),src:x.src||"desk"};}
+function rows(){var base=asset==="CRYPTO"?Object.keys(book).map(function(k){return book[k];}):BOOKS[asset]; var out=base.map(withChange); var query=q.trim().toUpperCase(); if(query) out=out.filter(function(x){return x.s.indexOf(query)>=0||(x.n||"").toUpperCase().indexOf(query)>=0;}); if(view==="MOVERS") out.sort(function(a,b){return b.ch-a.ch;}); if(view==="LOSERS") out.sort(function(a,b){return a.ch-b.ch;}); return out;}
+function heat(ch){if(ch>=2) return "HOT"; if(ch>=0) return "WARM"; if(ch>-2) return "COLD"; return "ICE";}
+function read(sym,ch,hi,lo,p){var sells=WHO.filter(function(w){return w.s===sym&&w.side==="SELL";}).length; var buys=WHO.filter(function(w){return w.s===sym&&w.side==="BUY";}).length; var pos=(p-lo)/((hi-lo)||1); if(buys&&pos<0.4) return "LEAN"; if(sells>=2&&pos>0.7) return "AVOID"; if(sells) return "WATCH"; if(ch>=2) return "HOT"; return "WATCH";}
+function pill(ch){return '<span class="pill '+(ch>=0?"up":"dn")+'">'+(ch>=0?"+":"")+ch.toFixed(2)+'%</span>';}
 function render(){
- $("assets").innerHTML=["STOCKS","ETFS","IRA","CRYPTO","RE"].map(k=>'<button data-k="'+k+'" class="'+(asset===k?"on":"")+'">'+k+"</button>").join("");
- $("views").innerHTML=["MARKETS","MOVERS","LOSERS","WHO"].map(k=>'<button data-k="'+k+'" class="'+(view===k?"on":"")+'">'+k+"</button>").join("");
- $("assets").querySelectorAll("button").forEach(b=>b.onclick=()=>{asset=b.dataset.k;render();});
- $("views").querySelectorAll("button").forEach(b=>b.onclick=()=>{view=b.dataset.k;render();});
- if(view==="WHO"){
-  const rows=WHO.filter(w=>!q||w.s.includes(q.toUpperCase())||w.who.toUpperCase().includes(q.toUpperCase()));
-  $("screen").innerHTML=rows.map(w=>'<button class="mkt" data-s="'+w.s+'"><span>'+w.who+'<small>'+w.s+" · "+w.role+" · "+w.dt+"</small></span><span class="r">'+qty(w.qty)+"<small>@ "+(w.px||"range")+"</small></span><span class="r"><span class="pill '+(w.side==="BUY"?"up":"dn")+'">'+w.side+"</span></span></button>").join("");
- } else {
-  $("screen").innerHTML=list().map(x=>'<button class="mkt" data-s="'+x.s+'"><span>'+x.s+'<small>'+(x.n||"")+"</small></span><span class="r">'+Number(x.p).toLocaleString(undefined,{maximumFractionDigits:x.p<5?4:2})+"<small>"+money(x.gain)+"</small></span><span class="r"><span class="pill '+(x.ch>=0?"up":"dn")+'">'+(x.ch>=0?"+":"")+x.ch.toFixed(2)+"%</span></span></button>").join("")||"<div style='padding:16px;color:#848e9c'>No names.</div>";
- }
- document.querySelectorAll("[data-s]").forEach(el=>el.onclick=()=>openSheet(el.dataset.s));
- if(asset==="IRA") $("screen").insertAdjacentHTML("afterbegin","<div style='padding:8px 12px;color:#848e9c;font-size:12px'>Model sleeve, not your account. 50 equity / 30 bonds / 10 bitcoin / 10 REIT.</div>");
- if(asset==="RE") $("screen").insertAdjacentHTML("afterbegin","<div style='padding:8px 12px;color:#848e9c;font-size:12px'>Public REIT tape. Not a private property appraisal.</div>");
+  $("assets").innerHTML=["STOCKS","ETFS","IRA","CRYPTO","RE"].map(function(k){return '<button type="button" data-a="'+k+'" class="'+(asset===k?"on":"")+'">'+k+'</button>';}).join("");
+  $("views").innerHTML=["MARKETS","MOVERS","LOSERS","WHO","FILLS"].map(function(k){return '<button type="button" data-v="'+k+'" class="'+(view===k?"on":"")+'">'+k+'</button>';}).join("");
+  Array.prototype.forEach.call($("assets").querySelectorAll("button"), function(b){b.onclick=function(){asset=b.getAttribute("data-a"); render();};});
+  Array.prototype.forEach.call($("views").querySelectorAll("button"), function(b){b.onclick=function(){view=b.getAttribute("data-v"); render();};});
+  var html="";
+  if(asset==="IRA") html+='<div class="note">Model sleeve only. 50% equity, 30% bonds, 10% bitcoin, 10% REIT. Not your account.</div>';
+  if(asset==="RE") html+='<div class="note">Public REIT tape. Not a private property appraisal.</div>';
+  if(view==="WHO"||view==="FILLS"){
+    var query=q.trim().toUpperCase();
+    var people=WHO.filter(function(w){return !query||w.s.indexOf(query)>=0||w.who.toUpperCase().indexOf(query)>=0;});
+    html+=people.map(function(w){var value=w.qty&&w.px?money(w.qty*w.px).replace("+",""):"range"; return '<button type="button" class="mkt" data-s="'+w.s+'"><span>'+w.who+'<small>'+w.s+' \u00b7 '+w.role+' \u00b7 '+w.dt+'</small></span><span class="r">'+qty(w.qty)+'<small>@ '+(w.px||"range")+'</small></span><span class="r"><span class="pill '+(w.side==="BUY"?"up":"dn")+'">'+w.side+'</span><small>'+value+'</small></span></button>';}).join("");
+  } else {
+    html+=rows().map(function(x){return '<button type="button" class="mkt" data-s="'+x.s+'"><span>'+x.s+'<small>'+x.n+' \u00b7 '+heat(x.ch)+' \u00b7 '+read(x.s,x.ch,x.hi,x.lo,x.p)+'</small></span><span class="r">'+Number(x.p).toLocaleString(undefined,{maximumFractionDigits:x.p<5?4:2})+'<small>'+money(x.gain)+'</small></span><span class="r">'+pill(x.ch)+'</span></button>';}).join("");
+  }
+  $("screen").innerHTML=html||'<div class="note">Nothing in this cut.</div>';
+  Array.prototype.forEach.call(document.querySelectorAll("[data-s]"), function(el){el.onclick=function(){openSheet(el.getAttribute("data-s"));};});
 }
-function find(sym){return Object.values(book).find(x=>x.s===sym)||Object.values(BOOKS).flat().find(x=>x.s===sym);}
-function chart(x){const hi=x.hi||x.p*1.02,lo=x.lo||x.p*0.98,pts=[lo,(lo+x.p)/2,x.p,hi,x.p],top=Math.max(hi,x.p),bot=Math.min(lo,x.p),span=(top-bot)||1,w=360,h=140,pad=14;const y=v=>pad+((top-v)/span)*(h-pad*2);const xy=pts.map((p,i)=>[pad+i/(pts.length-1)*(w-pad*2),y(p)]);const d=xy.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");const lines=sr?'<line x1="8" x2="'+(w-8)+'" y1="'+y(hi)+'" y2="'+y(hi)+'" stroke="#f6465d" stroke-dasharray="4 3"/><line x1="8" x2="'+(w-8)+'" y1="'+y(lo)+'" y2="'+y(lo)+'" stroke="#0ecb81" stroke-dasharray="4 3"/>':"";return '<svg viewBox="0 0 '+w+' '+h+'">'+lines+'<path d="'+d+'" fill="none" stroke="#eaecef" stroke-width="1.6"/></svg>';}
-function openSheet(sym){openSym=sym;const x=find(sym);if(!x)return;const ch=x.ch!=null?x.ch:(x.open?(x.p/x.open-1)*100:0);const gain=x.gain!=null?x.gain:(x.open?x.p-x.open:0);const fills=WHO.filter(w=>w.s===sym);$("sheet").innerHTML='<div class="sheet"><div class="bar" style="padding:0 0 8px"><button class="ghost" id="x">Back</button><b>'+x.s+"</b><button class="ghost" id="sr">S/R</button></div><div style='color:#848e9c'>"+(x.n||"")+"</div><div class="h '+(ch>=0?"buy":"sell")+'">'+Number(x.p).toLocaleString()+"</div><div class="'+(ch>=0?"buy":"sell")+'">"+money(gain)+"  "+(ch>=0?"+":"")+ch.toFixed(2)+"%</div><div class='grid'><div><b>"+(x.hi||"—")+"</b><span>High / resist</span></div><div><b>"+(x.lo||"—")+"</b><span>Low / support</span></div><div><b>"+(x.vol?qty(x.vol):"—")+"</b><span>Volume</span></div></div>"+chart(x)+"<div class='fill' style='color:#848e9c'><span>Who</span><span>Qty</span><span>Price</span><span>Side</span></div>"+(fills.map(w=>'<div class="fill"><span>'+w.who+"<small style='display:block;color:#848e9c'>"+w.role+" · "+w.dt+"</small></span><span>"+qty(w.qty)+"</span><span>"+(w.px?w.px.toFixed(2):"range")+"</span><span class="'+(w.side==="BUY"?"buy":"sell")+'">'+w.side+"</span></div>").join("")||"<div style='color:#848e9c;padding:8px 0'>No Form 4 print on this name.</div>")+"</div>";$("x").onclick=()=>{openSym=null;$("sheet").innerHTML="";};$("sr").onclick=()=>{sr=!sr;openSheet(sym);};}
-async function refresh(){$("src").textContent="Sync";try{const out={};await Promise.all(PAIRS.map(async pair=>{const sym=pair.split("-")[0];const [t,s]=await Promise.all([fetch("https://api.exchange.coinbase.com/products/"+pair+"/ticker").then(r=>r.json()),fetch("https://api.exchange.coinbase.com/products/"+pair+"/stats").then(r=>r.json())]);const last=+t.price,open=+s.open||last;out[sym]={s:sym,n:NAMES[sym],p:last,open,ch:(last/open-1)*100,gain:last-open,hi:+s.high,lo:+s.low,vol:+s.volume,src:"live"};}));book=out;$("src").textContent="Live";}catch(e){$("src").textContent="Delayed";}render();if(openSym)openSheet(openSym);}
-function fit(){document.documentElement.style.setProperty("--vh",((window.visualViewport&&visualViewport.height)||innerHeight)+"px");}
-fit();addEventListener("resize",fit);if(window.visualViewport)visualViewport.addEventListener("resize",fit);
-$("refresh").onclick=refresh;$("q").oninput=()=>{q=$("q").value;render();};refresh();setInterval(refresh,20000);
-</script></body></html>
+function find(sym){if(book[sym]) return withChange(book[sym]); var all=[]; Object.keys(BOOKS).forEach(function(k){all=all.concat(BOOKS[k]);}); var hit=all.filter(function(x){return x.s===sym;})[0]; return hit?withChange(hit):null;}
+function chart(x){var hi=x.hi||x.p*1.02, lo=x.lo||x.p*0.98, pts=[lo,(lo+x.p)/2,x.p,hi,x.p], top=Math.max(hi,x.p), bot=Math.min(lo,x.p), span=(top-bot)||1, w=360, h=140, pad=16; function y(v){return pad+((top-v)/span)*(h-pad*2);} var d=pts.map(function(p,i){var xx=pad+(i/(pts.length-1))*(w-pad*2); return (i?"L":"M")+xx.toFixed(1)+","+y(p).toFixed(1);}).join(" "); var lines=""; if(sr){lines+='<line x1="8" x2="344" y1="'+y(hi)+'" y2="'+y(hi)+'" stroke="#f6465d" stroke-dasharray="4 3"/>'; lines+='<line x1="8" x2="344" y1="'+y(lo)+'" y2="'+y(lo)+'" stroke="#0ecb81" stroke-dasharray="4 3"/>'; lines+='<line x1="20" y1="'+y(lo)+'" x2="330" y2="'+y(x.p)+'" stroke="#f0b90b"/>';} if(fib){[0.382,0.5,0.618].forEach(function(f){var v=hi-(hi-lo)*f; lines+='<line x1="8" x2="344" y1="'+y(v)+'" y2="'+y(v)+'" stroke="rgba(234,236,239,.35)"/>';});} return '<svg viewBox="0 0 '+w+' '+h+'">'+lines+'<path d="'+d+'" fill="none" stroke="#eaecef" stroke-width="1.6"/></svg>';}
+function openSheet(sym){openSym=sym; var x=find(sym); if(!x) return; var fills=WHO.filter(function(w){return w.s===sym;}); var body='<div class="sheet"><div class="bar" style="padding:0 0 8px"><button class="ghost" id="back" type="button">Back</button><b>'+x.s+'</b><span class="live">'+heat(x.ch)+'</span></div>'; body+='<div class="note" style="padding-left:0">'+x.n+' \u00b7 '+read(x.s,x.ch,x.hi,x.lo,x.p)+' \u00b7 not a trade</div>'; body+='<div class="h '+(x.ch>=0?"buy":"sell")+'">'+Number(x.p).toLocaleString()+'</div>'; body+='<div class="'+(x.ch>=0?"buy":"sell")+'">'+money(x.gain)+'   '+(x.ch>=0?"+":"")+x.ch.toFixed(2)+'%</div>'; body+='<div class="grid"><div><b>'+x.hi+'</b><span>High / resistance</span></div><div><b>'+x.lo+'</b><span>Low / support</span></div><div><b>'+qty(x.vol)+'</b><span>Volume</span></div></div>'; body+='<div><button class="ghost" id="srBtn" type="button">S/R</button><button class="ghost" id="fibBtn" type="button">Fib</button></div>'; body+=chart(x); body+='<div class="note" style="padding-left:0">Red dash is resistance. Green dash is support. Gold is the trend to last.</div>'; body+='<div class="fill" style="color:#848e9c"><span>Who</span><span>Qty</span><span>Price</span><span>Side</span></div>'; body+=fills.map(function(w){return '<div class="fill"><span>'+w.who+'<small style="display:block;color:#848e9c">'+w.role+' \u00b7 '+w.dt+'</small></span><span>'+qty(w.qty)+'</span><span>'+(w.px?w.px.toFixed(2):"range")+'</span><span class="'+(w.side==="BUY"?"buy":"sell")+'">'+w.side+'</span></div>';}).join("")||'<div class="note">No named Form 4 on this symbol.</div>'; body+='<div class="note">CEO runs the company. CFO runs the money. A director vote is not a stock buy. Congress files a dollar range, often late.</div></div>'; $("sheet").innerHTML=body; $("back").onclick=function(){openSym=null; $("sheet").innerHTML="";}; $("srBtn").onclick=function(){sr=!sr; openSheet(sym);}; $("fibBtn").onclick=function(){fib=!fib; openSheet(sym);};}
+function refresh(){$("src").textContent="Sync"; var jobs=PAIRS.map(function(pair){var sym=pair.split("-")[0]; return Promise.all([fetch("https://api.exchange.coinbase.com/products/"+pair+"/ticker").then(function(r){return r.json();}), fetch("https://api.exchange.coinbase.com/products/"+pair+"/stats").then(function(r){return r.json();})]).then(function(both){var t=both[0], s=both[1]; var last=+t.price, open=+s.open||last; book[sym]={s:sym,n:NAMES[sym],p:last,open:open,ch:(last/open-1)*100,gain:last-open,hi:+s.high,lo:+s.low,vol:+s.volume,src:"live"};});}); Promise.all(jobs).then(function(){$("src").textContent="Live"; render(); if(openSym) openSheet(openSym);}).catch(function(){$("src").textContent="Delayed"; render();});}
+function fit(){var h=(window.visualViewport&&window.visualViewport.height)||window.innerHeight; document.documentElement.style.setProperty("--vh", h+"px");}
+fit(); window.addEventListener("resize", fit); if(window.visualViewport) window.visualViewport.addEventListener("resize", fit);
+$("refresh").onclick=refresh; $("q").oninput=function(){q=$("q").value; render();}; render(); refresh(); setInterval(refresh, 20000);
+</script>
+</body>
+</html>
