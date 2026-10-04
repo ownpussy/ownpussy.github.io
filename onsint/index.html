@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="theme-color" content="#07090d" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="icon.svg" />
+<title>ONSINT</title>
+<style>
+  :root { --bg:#07090d; --card:#12171f; --card2:#1a212c; --line:#2a3342; --text:#e8edf4; --muted:#8b97a8; --lime:#d7ff3c; --ink:#141806; --hit:#3dd68c; --lead:#f5b942; --miss:#6d7888; --bad:#ff6b6b; --safe-t:env(safe-area-inset-top); --safe-b:env(safe-area-inset-bottom); }
+  * { box-sizing:border-box; } html,body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+  button,input { font:inherit; color:inherit; }
+  header { position:sticky; top:0; z-index:5; padding:calc(12px + var(--safe-t)) 14px 10px; background:rgba(7,9,13,.92); backdrop-filter:blur(16px); border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; }
+  .brand { display:flex; gap:10px; align-items:center; } .mark { width:34px; height:34px; border-radius:10px; background:var(--lime); color:var(--ink); display:grid; place-items:center; font-weight:800; }
+  h1 { font-size:17px; margin:0; letter-spacing:.08em; } .sub { color:var(--muted); font-size:12px; }
+  .ghost { background:transparent; border:1px solid var(--line); border-radius:999px; padding:7px 12px; color:var(--muted); }
+  main { padding:14px 14px calc(22px + var(--safe-b)); max-width:680px; margin:0 auto; }
+  .warn { background:#241f10; color:#f0d48a; border-radius:12px; padding:10px 12px; font-size:12px; line-height:1.45; margin-bottom:12px; }
+  .kinds,.mods { display:flex; gap:6px; overflow-x:auto; padding-bottom:8px; }
+  .kinds button,.mods button { border:1px solid var(--line); background:var(--card); color:var(--muted); border-radius:999px; padding:8px 12px; white-space:nowrap; }
+  .kinds button.on { background:var(--lime); color:var(--ink); border-color:var(--lime); font-weight:700; }
+  .mods button.on { border-color:var(--lime); color:var(--lime); }
+  .search { display:flex; gap:8px; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:6px 6px 6px 14px; }
+  .search input { flex:1; background:transparent; border:0; outline:none; font-size:16px; min-width:0; }
+  .go { background:var(--lime); color:var(--ink); border:0; border-radius:12px; padding:12px 16px; font-weight:800; }
+  .go:disabled { opacity:.45; }
+  .note { color:var(--muted); font-size:12px; line-height:1.45; margin:4px 2px 12px; }
+  .stats { display:flex; gap:8px; margin-bottom:10px; }
+  .stat { flex:1; background:var(--card); border-radius:12px; padding:10px 12px; }
+  .stat b { display:block; font-size:18px; } .stat span { color:var(--muted); font-size:11px; letter-spacing:.06em; text-transform:uppercase; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px; margin-bottom:8px; }
+  .row { display:flex; justify-content:space-between; gap:8px; align-items:baseline; }
+  .src { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+  .tag { font-size:11px; border-radius:999px; padding:2px 7px; }
+  .hit .tag { background:#143526; color:var(--hit); } .lead .tag { background:#3a2e12; color:var(--lead); }
+  .miss .tag { background:#1c2129; color:var(--miss); } .error .tag { background:#3a1717; color:var(--bad); }
+  .meta .tag,.status .tag,.done .tag { background:#1c2430; color:#9eb0c8; }
+  h3 { margin:6px 0 4px; font-size:15px; font-weight:650; word-break:break-word; }
+  p { margin:0; color:var(--muted); font-size:13px; line-height:1.4; word-break:break-word; }
+  .actions { display:flex; gap:8px; margin-top:8px; }
+  .actions a,.actions button { font-size:13px; text-decoration:none; background:var(--card2); border:0; border-radius:8px; padding:7px 10px; color:var(--text); }
+  .sheet { position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; z-index:9; }
+  .sheet.on { display:block; }
+  .panel { position:absolute; left:0; right:0; bottom:0; background:#10151c; border-radius:18px 18px 0 0; padding:16px 16px calc(18px + var(--safe-b)); max-height:88dvh; overflow:auto; }
+  label { display:block; font-size:12px; color:var(--muted); margin:12px 0 6px; }
+  .panel input { width:100%; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px; font-size:16px; }
+  .case { width:100%; text-align:left; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 12px; margin-bottom:8px; }
+  .empty { color:var(--muted); text-align:center; padding:28px 10px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="mark">O</div><div><h1>ONSINT</h1><div class="sub">runs on this phone</div></div></div>
+  <button class="ghost" id="openMore">Cases</button>
+</header>
+<main>
+  <div class="warn">Public sources only, on targets you are allowed to look up. Profile links, DNS, and banners. Not a people-search or doxxing tool. Username checks go through a public CORS proxy, so do not type secrets.</div>
+  <div class="kinds" id="kinds"></div>
+  <form class="search" id="form">
+    <input id="q" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="username" />
+    <button class="go" id="go" type="submit">Run</button>
+  </form>
+  <div class="mods" id="mods"></div>
+  <div class="note" id="modnote"></div>
+  <div class="stats" id="stats" hidden>
+    <div class="stat"><b id="nHit">0</b><span>Hits</span></div>
+    <div class="stat"><b id="nLead">0</b><span>Leads</span></div>
+    <div class="stat"><b id="nMiss">0</b><span>Clear</span></div>
+  </div>
+  <div id="feed"><div class="empty">This version runs entirely in Safari. No computer, no install. Add it to your home screen after the first load.</div></div>
+</main>
+<div class="sheet" id="sheet"><div class="panel"><div class="row"><h2 id="sheetTitle" style="margin:4px 0;font-size:18px">Cases</h2><button class="ghost" id="closeSheet">Close</button></div><div id="sheetBody"></div></div></div>
+<script>
+const KINDS = [
+  { id:"username", label:"Username", ph:"username" },
+  { id:"email", label:"Email", ph:"name@domain.com" },
+  { id:"domain", label:"Domain", ph:"example.com" },
+  { id:"ip", label:"IP", ph:"1.2.3.4" }
+];
+const MODS = {
+  username: [["accounts","Accounts"],["pivots","Open links"]],
+  email: [["identity","Identity"],["domain","Mail domain"],["emailosint","EmailOSINT"]],
+  domain: [["dns","DNS"],["certs","Certificates"],["hosts","Hosts"]],
+  ip: [["host","Host"],["shodan","Shodan InternetDB"]]
+};
+const SITES = [
+  ["GitHub","https://github.com/{u}","https://api.github.com/users/{u}", (s,t)=>s===200&&t.includes('"login"')],
+  ["GitLab","https://gitlab.com/{u}","https://gitlab.com/api/v4/users?username={u}", (s,t)=>t.trim().startsWith("[{")],
+  ["Reddit","https://www.reddit.com/user/{u}","https://www.reddit.com/user/{u}/about.json", (s,t)=>s===200&&t.includes('"name"')],
+  ["Keybase","https://keybase.io/{u}","https://keybase.io/_/api/1.0/user/lookup.json?usernames={u}", (s,t)=>t.includes('"them"')&&!t.includes('"them":[null]')&&!t.includes('"them": []')],
+  ["Hacker News","https://news.ycombinator.com/user?id={u}","https://hacker-news.firebaseio.com/v0/user/{u}.json", (s,t)=>s===200&&t!=="null"&&t.includes('"id"')],
+  ["Dev.to","https://dev.to/{u}","https://dev.to/api/users/by_username?url={u}", (s,t)=>s===200&&t.includes('"username"')],
+  ["GitLab social","https://medium.com/@{u}","https://medium.com/@{u}", (s,t)=>s===200&&!/page not found|out of nothing/i.test(t)],
+  ["Telegram","https://t.me/{u}","https://t.me/{u}", (s,t)=>t.includes("tgme_page_title")&&!/if you have telegram, you can contact/i.test(t)],
+  ["Steam","https://steamcommunity.com/id/{u}","https://steamcommunity.com/id/{u}", (s,t)=>s===200&&!/profile could not be found/i.test(t)],
+  ["Docker Hub","https://hub.docker.com/u/{u}","https://hub.docker.com/v2/users/{u}/", (s,t)=>s===200&&t.includes('"username"')],
+  ["PyPI","https://pypi.org/user/{u}/","https://pypi.org/user/{u}/", (s,t)=>s===200&&!/we looked everywhere/i.test(t)],
+  ["npm","https://www.npmjs.com/~{u}","https://registry.npmjs.org/-/user/org.couchdb.user:{u}", (s,t)=>s===200&&t.includes('"name"')],
+  ["Chess.com","https://www.chess.com/member/{u}","https://api.chess.com/pub/player/{u}", (s,t)=>s===200&&t.includes('"username"')],
+  ["Lichess","https://lichess.org/@/{u}","https://lichess.org/api/user/{u}", (s,t)=>s===200&&t.includes('"username"')],
+  ["Codeberg","https://codeberg.org/{u}","https://codeberg.org/api/v1/users/{u}", (s,t)=>s===200&&t.includes('"login"')],
+  ["Bluesky","https://bsky.app/profile/{u}.bsky.social","https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor={u}.bsky.social", (s,t)=>s===200&&t.includes('"handle"')],
+  ["Mastodon","https://mastodon.social/@{u}","https://mastodon.social/api/v1/accounts/lookup?acct={u}", (s,t)=>s===200&&t.includes('"username"')],
+  ["Replit","https://replit.com/@{u}","https://replit.com/@{u}", (s,t)=>s===200&&!/page not found/i.test(t)],
+  ["Linktree","https://linktr.ee/{u}","https://linktr.ee/{u}", (s,t)=>s===200&&!/not found|404/i.test(t)&&t.length>500],
+  ["About.me","https://about.me/{u}","https://about.me/{u}", (s,t)=>s===200&&!/nobody's home/i.test(t)],
+  ["Vimeo","https://vimeo.com/{u}","https://vimeo.com/api/v2/{u}/info.json", (s,t)=>s===200&&t.includes('"display_name"')],
+  ["RubyGems","https://rubygems.org/profiles/{u}","https://rubygems.org/api/v1/profiles/{u}.json", (s,t)=>s===200&&t.includes('"username"')||t.includes('"id"')],
+  ["Crates.io","https://crates.io/users/{u}","https://crates.io/api/v1/users/{u}", (s,t)=>s===200&&t.includes('"login"')],
+  ["Wikipedia","https://en.wikipedia.org/wiki/User:{u}","https://en.wikipedia.org/wiki/User:{u}", (s,t)=>s===200&&!/does not have a user page/i.test(t)],
+  ["Pastebin","https://pastebin.com/u/{u}","https://pastebin.com/u/{u}", (s,t)=>s===200&&!/not found/i.test(t)],
+  ["Imgur","https://imgur.com/user/{u}","https://imgur.com/user/{u}", (s,t)=>s===200&&!/page not found/i.test(t)],
+  ["SoundCloud","https://soundcloud.com/{u}","https://soundcloud.com/{u}", (s,t)=>s===200&&!/we can't find that user/i.test(t)],
+  ["Twitch","https://www.twitch.tv/{u}","https://www.twitch.tv/{u}", (s,t)=>s===200&&!/sorry. unless you/i.test(t)],
+  ["Patreon","https://www.patreon.com/{u}","https://www.patreon.com/{u}", (s,t)=>s===200&&!/page not found/i.test(t)],
+  ["Bitbucket","https://bitbucket.org/{u}/","https://bitbucket.org/{u}/", (s,t)=>s===200&&!/resource not found/i.test(t)],
+  ["Product Hunt","https://www.producthunt.com/@{u}","https://www.producthunt.com/@{u}", (s,t)=>s===200&&t.length>800],
+  ["Behance","https://www.behance.net/{u}","https://www.behance.net/{u}", (s,t)=>s===200&&!/page not found/i.test(t)],
+  ["Dribbble","https://dribbble.com/{u}","https://dribbble.com/{u}", (s,t)=>s===200&&!/whoops/i.test(t)],
+  ["Unsplash","https://unsplash.com/@{u}","https://unsplash.com/@{u}", (s,t)=>s===200&&!/page not found/i.test(t)],
+  ["Last.fm","https://www.last.fm/user/{u}","https://www.last.fm/user/{u}", (s,t)=>s===200&&!/user not found/i.test(t)],
+  ["Flickr","https://www.flickr.com/people/{u}/","https://www.flickr.com/people/{u}/", (s,t)=>s===200&&!/page not found/i.test(t)],
+  ["Pinterest","https://www.pinterest.com/{u}/","https://www.pinterest.com/{u}/", (s,t)=>s===200&&!/sorry! we couldn/i.test(t)],
+  ["Roblox","https://www.roblox.com/users/profile?username={u}","https://users.roblox.com/v1/users/search?keyword={u}&limit=10", (s,t)=>t.toLowerCase().includes('"name":"'+'{u}'.toLowerCase()+'"')||t.toLowerCase().includes('"name": "' )]
+];
+const PIVOTS = [
+  ["X","https://x.com/{u}"],["Instagram","https://www.instagram.com/{u}/"],["TikTok","https://www.tiktok.com/@{u}"],
+  ["YouTube","https://www.youtube.com/@{u}"],["Facebook","https://www.facebook.com/{u}"],["LinkedIn","https://www.linkedin.com/in/{u}"],
+  ["Spotify","https://open.spotify.com/user/{u}"],["Snapchat","https://www.snapchat.com/add/{u}"],["Reddit","https://www.reddit.com/user/{u}"],
+  ["GitHub","https://github.com/{u}"],["Telegram","https://t.me/{u}"],["Pinterest","https://www.pinterest.com/{u}/"]
+];
+let kind = "username";
+let selected = new Set(["accounts","identity","dns","host"]);
+let counts = { hit:0, lead:0, miss:0 };
+let running = false;
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s??"").replace(/[&<>"]/g, c => ({"&":"&","<":"<",">":">",'"':"""}[c]));
+const fill = (t,u) => t.replaceAll("{u}", encodeURIComponent(u));
+
+function renderKinds() {
+  $("kinds").innerHTML = KINDS.map(k => `<button type="button" data-k="${k.id}" class="${k.id===kind?"on":""}">${k.label}</button>`).join("");
+  $("kinds").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; kind = b.dataset.k; $("q").placeholder = KINDS.find(k=>k.id===kind).ph; selected = new Set(MODS[kind].map(m=>m[0]).slice(0,2)); renderKinds(); renderMods(); };
+}
+function renderMods() {
+  $("mods").innerHTML = MODS[kind].map(([id,label]) => `<button type="button" data-m="${id}" class="${selected.has(id)?"on":""}">${label}</button>`).join("");
+  $("mods").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; selected.has(b.dataset.m) ? selected.delete(b.dataset.m) : selected.add(b.dataset.m); if (!selected.size) selected.add(MODS[kind][0][0]); renderMods(); };
+  $("modnote").textContent = kind==="email" ? "EmailOSINT opens emailosint.org in a new tab. Identity checks stay on this phone." : "Hits stream in as each site answers. A public proxy is only used when the site blocks the browser.";
+}
+async function fetchProbe(url) {
+  try {
+    const r = await fetch(url, { redirect:"follow" });
+    return { status:r.status, text:(await r.text()).slice(0,5000), via:"direct" };
+  } catch (_) {}
+  try {
+    const r = await fetch("https://api.allorigins.win/get?url=" + encodeURIComponent(url));
+    if (r.ok) {
+      const data = await r.json();
+      return { status: data.status?.http_code || 200, text: String(data.contents||"").slice(0,5000), via:"proxy" };
+    }
+  } catch (_) {}
+  try {
+    const r = await fetch("https://corsproxy.io/?" + encodeURIComponent(url));
+    if (r.ok) return { status:r.status, text:(await r.text()).slice(0,5000), via:"proxy" };
+  } catch (_) {}
+  throw new Error("blocked");
+}
+async function doh(name, type) {
+  const r = await fetch("https://cloudflare-dns.com/dns-query?name=" + encodeURIComponent(name) + "&type=" + type, { headers:{ Accept:"application/dns-json" } });
+  if (!r.ok) throw new Error("DNS "+r.status);
+  return r.json();
+}
+function card(ev) {
+  const el = document.createElement("article");
+  el.className = "card " + ev.kind;
+  const tag = ev.kind==="hit"?"HIT":ev.kind==="lead"?"LEAD":ev.kind==="miss"?"CLEAR":ev.kind.toUpperCase();
+  el.innerHTML = `<div class="row"><span class="src">${esc(ev.source||"onsint")}</span><span class="tag">${tag}</span></div><h3>${esc(ev.title)}</h3><p>${esc(ev.detail||"")}</p>`;
+  if (ev.url) {
+    const actions = document.createElement("div");
+    actions.className = "actions";
+    const a = document.createElement("a");
+    a.href = ev.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = "Open";
+    const c = document.createElement("button");
+    c.type = "button"; c.textContent = "Copy";
+    c.onclick = () => navigator.clipboard.writeText(ev.url).catch(()=>{});
+    actions.append(a,c); el.append(actions);
+  }
+  return el;
+}
+let currentEvents = null;
+function emit(ev) {
+  if (ev.kind==="hit") counts.hit++;
+  if (ev.kind==="lead") counts.lead++;
+  if (ev.kind==="miss") counts.miss++;
+  $("nHit").textContent = counts.hit; $("nLead").textContent = counts.lead; $("nMiss").textContent = counts.miss;
+  $("feed").append(card(ev));
+  ev.ts = Date.now();
+  if (currentEvents) currentEvents.push(ev);
+  return ev;
+}
+async function pool(items, limit, worker) {
+  const q = items.slice();
+  const runners = Array.from({ length: Math.min(limit, q.length) }, async () => {
+    while (q.length && running) await worker(q.shift());
+  });
+  await Promise.all(runners);
+}
+async function scanUsername(user) {
+  user = user.replace(/^@/, "");
+  if (selected.has("accounts")) {
+    emit({ kind:"status", source:"onsint", title:"Checking accounts", detail:SITES.length + " public sites" });
+    await pool(SITES, 4, async (site) => {
+      const url = fill(site[1], user);
+      try {
+        const probe = await fetchProbe(fill(site[2], user));
+        const ok = site[3](probe.status, probe.text.replaceAll("{u}", user.toLowerCase()));
+        emit({ kind: ok?"hit":"miss", source:"account", title:site[0], url, detail: ok ? "found via " + probe.via : "not found" });
+      } catch (err) {
+        emit({ kind:"lead", source:"account", title:site[0], url, detail:"could not check automatically — open it" });
+      }
+    });
+  }
+  if (selected.has("pivots")) {
+    for (const [name, template] of PIVOTS) emit({ kind:"lead", source:"pivot", title:name, url:fill(template, user), detail:"open to confirm" });
+  }
+}
+function md5(str) {
+  function cmn(q, a, b, x, s, t) { a = (a + q + x + t) | 0; return (((a << s) | (a >>> (32 - s))) + b) | 0; }
+  function ff(a,b,c,d,x,s,t){ return cmn((b & c) | (~b & d), a, b, x, s, t); }
+  function gg(a,b,c,d,x,s,t){ return cmn((b & d) | (c & ~d), a, b, x, s, t); }
+  function hh(a,b,c,d,x,s,t){ return cmn(b ^ c ^ d, a, b, x, s, t); }
+  function ii(a,b,c,d,x,s,t){ return cmn(c ^ (b | ~d), a, b, x, s, t); }
+  const bytes = new TextEncoder().encode(str);
+  const n = bytes.length; const words = [];
+  for (let i=0;i<n;i++) words[i>>2] |= bytes[i] << ((i%4)*8);
+  words[n>>2] |= 0x80 << ((n%4)*8);
+  words[(((n+8)>>>6)<<4)+14] = n*8;
+  let a=1732584193,b=-271733879,c=-1732584194,d=271733878;
+  for (let i=0;i<words.length;i+=16) {
+    const oa=a,ob=b,oc=c,od=d;
+    a=ff(a,b,c,d,words[i],7,-680876936); d=ff(d,a,b,c,words[i+1],12,-389564586); c=ff(c,d,a,b,words[i+2],17,606105819); b=ff(b,c,d,a,words[i+3],22,-1044525330);
+    a=ff(a,b,c,d,words[i+4],7,-176418897); d=ff(d,a,b,c,words[i+5],12,1200080426); c=ff(c,d,a,b,words[i+6],17,-1473231341); b=ff(b,c,d,a,words[i+7],22,-45705983);
+    a=ff(a,b,c,d,words[i+8],7,1770035416); d=ff(d,a,b,c,words[i+9],12,-1958414417); c=ff(c,d,a,b,words[i+10],17,-42063); b=ff(b,c,d,a,words[i+11],22,-1990404162);
+    a=ff(a,b,c,d,words[i+12],7,1804603682); d=ff(d,a,b,c,words[i+13],12,-40341101); c=ff(c,d,a,b,words[i+14],17,-1502002290); b=ff(b,c,d,a,words[i+15],22,1236535329);
+    a=gg(a,b,c,d,words[i+1],5,-165796510); d=gg(d,a,b,c,words[i+6],9,-1069501632); c=gg(c,d,a,b,words[i+11],14,643717713); b=gg(b,c,d,a,words[i],20,-373897302);
+    a=gg(a,b,c,d,words[i+5],5,-701558691); d=gg(d,a,b,c,words[i+10],9,38016083); c=gg(c,d,a,b,words[i+15],14,-660478335); b=gg(b,c,d,a,words[i+4],20,-405537848);
+    a=gg(a,b,c,d,words[i+9],5,568446438); d=gg(d,a,b,c,words[i+14],9,-1019803690); c=gg(c,d,a,b,words[i+3],14,-187363961); b=gg(b,c,d,a,words[i+8],20,1163531501);
+    a=gg(a,b,c,d,words[i+13],5,-1444681467); d=gg(d,a,b,c,words[i+2],9,-51403784); c=gg(c,d,a,b,words[i+7],14,1735328473); b=gg(b,c,d,a,words[i+12],20,-1926607734);
+    a=hh(a,b,c,d,words[i+5],4,-378558); d=hh(d,a,b,c,words[i+8],11,-2022574463); c=hh(c,d,a,b,words[i+11],16,1839030562); b=hh(b,c,d,a,words[i+14],23,-35309556);
+    a=hh(a,b,c,d,words[i+1],4,-1530992060); d=hh(d,a,b,c,words[i+4],11,1272893353); c=hh(c,d,a,b,words[i+7],16,-155497632); b=hh(b,c,d,a,words[i+10],23,-1094730640);
+    a=hh(a,b,c,d,words[i+13],4,681279174); d=hh(d,a,b,c,words[i],11,-358537222); c=hh(c,d,a,b,words[i+3],16,-722521979); b=hh(b,c,d,a,words[i+6],23,76029189);
+    a=hh(a,b,c,d,words[i+9],4,-640364487); d=hh(d,a,b,c,words[i+12],11,-421815835); c=hh(c,d,a,b,words[i+15],16,530742520); b=hh(b,c,d,a,words[i+2],23,-995338651);
+    a=ii(a,b,c,d,words[i],6,-198630844); d=ii(d,a,b,c,words[i+7],10,1126891415); c=ii(c,d,a,b,words[i+14],15,-1416354905); b=ii(b,c,d,a,words[i+5],21,-57434055);
+    a=ii(a,b,c,d,words[i+12],6,1700485571); d=ii(d,a,b,c,words[i+3],10,-1894986606); c=ii(c,d,a,b,words[i+10],15,-1051523); b=ii(b,c,d,a,words[i+1],21,-2054922799);
+    a=ii(a,b,c,d,words[i+8],6,1873313359); d=ii(d,a,b,c,words[i+15],10,-30611744); c=ii(c,d,a,b,words[i+6],15,-1560198380); b=ii(b,c,d,a,words[i+13],21,1309151649);
+    a=ii(a,b,c,d,words[i+4],6,-145523070); d=ii(d,a,b,c,words[i+11],10,-1120210379); c=ii(c,d,a,b,words[i+2],15,718787259); b=ii(b,c,d,a,words[i+9],21,-343485551);
+    a=(a+oa)|0; b=(b+ob)|0; c=(c+oc)|0; d=(d+od)|0;
+  }
+  const hex = (n) => [n,n>>8,n>>16,n>>24].map(x => (x&255).toString(16).padStart(2,"0")).join("");
+  return hex(a)+hex(b)+hex(c)+hex(d);
+}
+function gravatar(hash) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+    img.src = "https://www.gravatar.com/avatar/" + hash + "?d=404&s=80";
+  });
+}
+async function scanEmail(email) {
+  email = email.trim().toLowerCase();
+  const [local, domain] = email.split("@");
+  if (!domain) { emit({ kind:"error", source:"onsint", title:"Not an email", detail:email }); return; }
+  emit({ kind:"meta", source:"email", title:"Local part", detail:local });
+  if (selected.has("identity")) {
+    const hash = md5(email);
+    const has = await gravatar(hash);
+    emit(has ? { kind:"hit", source:"gravatar", title:"Gravatar avatar", url:"https://gravatar.com/"+hash, detail:"public avatar" } : { kind:"miss", source:"gravatar", title:"Gravatar avatar", detail:"none" });
+    try {
+      const probe = await fetchProbe("https://en.gravatar.com/" + hash + ".json");
+      if (probe.status === 200 && probe.text.includes("displayName")) {
+        const entry = JSON.parse(probe.text).entry?.[0] || {};
+        emit({ kind:"hit", source:"gravatar", title: entry.displayName || "Gravatar profile", url: entry.profileUrl || ("https://gravatar.com/"+hash), detail: entry.currentLocation || entry.preferredUsername || "profile" });
+      }
+    } catch (_) {}
+    try {
+      const probe = await fetchProbe("https://api.github.com/search/commits?q=" + encodeURIComponent("author-email:"+email) + "&per_page=5");
+      if (probe.text.includes('"total_count"')) {
+        const data = JSON.parse(probe.text);
+        if (data.total_count > 0) emit({ kind:"hit", source:"github", title:"GitHub commits", url:"https://github.com/search?q=author-email%3A"+encodeURIComponent(email)+"&type=commits", detail: data.total_count + " public commit(s)" });
+        else emit({ kind:"miss", source:"github", title:"GitHub commits", detail:"none with this author email" });
+      }
+    } catch (err) { emit({ kind:"error", source:"github", title:"GitHub commits", detail:"lookup blocked" }); }
+    emit({ kind:"lead", source:"pivot", title:"Username pivot · " + local, detail:"Run a username scan on the local part" });
+    emit({ kind:"lead", source:"hibp", title:"Have I Been Pwned", url:"https://haveibeenpwned.com/", detail:"Paste the address there. Breach names are not pulled into this app." });
+  }
+  if (selected.has("domain")) await scanDomain(domain, true);
+  if (selected.has("emailosint")) emit({ kind:"lead", source:"emailosint", title:"EmailOSINT", url:"https://emailosint.org/", detail:"Opens their site. Paste the address. Free tier is a few lookups a day." });
+}
+async function scanDomain(domain, nested=false) {
+  domain = domain.replace(/^https?:\/\//,"").split("/")[0].toLowerCase();
+  if (!nested) emit({ kind:"meta", source:"domain", title:domain, url:"https://"+domain, detail:"public DNS and certificates" });
+  if (selected.has("dns") || nested) {
+    for (const type of ["A","AAAA","MX","NS","TXT"]) {
+      try {
+        const data = await doh(domain, type);
+        const answers = data.Answer || [];
+        if (!answers.length) { emit({ kind:"miss", source:"dns", title:type+" "+domain, detail:"no record" }); continue; }
+        for (const ans of answers.slice(0,6)) emit({ kind:"hit", source:"dns", title:type+" "+domain, detail:String(ans.data).replace(/^"|"$/g,"") });
+      } catch (err) { emit({ kind:"error", source:"dns", title:type, detail:err.message }); }
+    }
+  }
+  if (selected.has("certs") || nested) {
+    try {
+      const probe = await fetchProbe("https://crt.sh/?q=%25." + encodeURIComponent(domain) + "&output=json");
+      const rows = JSON.parse(probe.text);
+      const names = [...new Set(rows.flatMap(r => String(r.name_value||"").split("\n")).map(n => n.trim().toLowerCase().replace(/^\*\./,"")).filter(n => n.endsWith(domain)))];
+      emit({ kind:"meta", source:"crtsh", title:"Certificate names", url:"https://crt.sh/?q=%25."+domain, detail:names.length + " unique" });
+      for (const name of names.slice(0,25)) emit({ kind:"hit", source:"crtsh", title:name, url:"https://"+name, detail:"crt.sh" });
+    } catch (err) { emit({ kind:"error", source:"crtsh", title:"crt.sh", detail:"lookup blocked" }); }
+  }
+  if (selected.has("hosts") && !nested) {
+    try {
+      const probe = await fetchProbe("https://rdap.org/domain/" + domain);
+      if (probe.status === 200) emit({ kind:"hit", source:"rdap", title:"RDAP", url:"https://rdap.org/domain/"+domain, detail: probe.text.slice(0,180).replace(/\s+/g," ") });
+    } catch (_) {}
+  }
+}
+async function scanIp(ip) {
+  if (selected.has("host")) {
+    try {
+      const r = await fetch("https://ipwho.is/" + encodeURIComponent(ip));
+      const data = await r.json();
+      if (data.success) emit({ kind:"hit", source:"ipwho", title: data.connection?.org || data.connection?.isp || "Network", url:"https://ipwho.is/"+ip, detail:[data.city, data.region, data.country, data.connection?.isp].filter(Boolean).join(" · ") });
+      else emit({ kind:"error", source:"ipwho", title:"IP lookup", detail:data.message || "failed" });
+    } catch (err) { emit({ kind:"error", source:"ipwho", title:"IP lookup", detail:err.message }); }
+  }
+  if (selected.has("shodan")) {
+    try {
+      const r = await fetch("https://internetdb.shodan.io/" + encodeURIComponent(ip));
+      if (r.status === 404) emit({ kind:"miss", source:"shodan", title:"Shodan InternetDB", url:"https://www.shodan.io/host/"+ip, detail:"no open banners" });
+      else {
+        const data = await r.json();
+        emit({ kind:"hit", source:"shodan", title:"Shodan InternetDB", url:"https://www.shodan.io/host/"+ip, detail:"ports " + (data.ports||[]).join(", ") });
+        for (const host of (data.hostnames||[]).slice(0,8)) emit({ kind:"hit", source:"shodan", title:host, detail:"hostname" });
+        for (const cve of (data.vulns||[]).slice(0,8)) emit({ kind:"lead", source:"shodan", title:cve, url:"https://nvd.nist.gov/vuln/detail/"+cve, detail:"listed on the host banner, not confirmed exploited" });
+      }
+    } catch (err) { emit({ kind:"lead", source:"shodan", title:"Shodan", url:"https://www.shodan.io/host/"+ip, detail:"InternetDB blocked — open the host page" }); }
+  }
+}
+function saveCase(query, events) {
+  const cases = JSON.parse(localStorage.getItem("onsint-cases") || "[]");
+  cases.unshift({ id: Date.now().toString(36), kind, query, created: new Date().toISOString().slice(0,16).replace("T"," "), hits: events.filter(e=>e.kind==="hit").length, events });
+  localStorage.setItem("onsint-cases", JSON.stringify(cases.slice(0,30)));
+}
+$("form").onsubmit = async (e) => {
+  e.preventDefault();
+  const q = $("q").value.trim();
+  if (!q || running) return;
+  running = true; $("go").disabled = true; $("feed").innerHTML = ""; $("stats").hidden = false;
+  counts = { hit:0, lead:0, miss:0 };
+  currentEvents = [];
+  try {
+    if (kind==="username") await scanUsername(q);
+    else if (kind==="email") await scanEmail(q);
+    else if (kind==="domain") await scanDomain(q);
+    else await scanIp(q);
+    emit({ kind:"done", source:"onsint", title:"Done", detail: counts.hit + " hits" });
+  } catch (err) {
+    emit({ kind:"error", source:"onsint", title:"Scan stopped", detail: err.message });
+  }
+  saveCase(q, currentEvents);
+  currentEvents = null;
+  running = false; $("go").disabled = false;
+};
+$("closeSheet").onclick = () => $("sheet").classList.remove("on");
+$("sheet").onclick = (e) => { if (e.target.id==="sheet") $("sheet").classList.remove("on"); };
+$("openMore").onclick = () => {
+  const cases = JSON.parse(localStorage.getItem("onsint-cases") || "[]");
+  $("sheetTitle").textContent = "Cases";
+  $("sheetBody").innerHTML = `<p class="note">Saved on this phone only.</p>` + (cases.map(c => `<button class="case" data-id="${c.id}"><b>${esc(c.query)}</b><div class="sub">${esc(c.kind)} · ${c.hits} hits · ${esc(c.created)}</div></button>`).join("") || `<div class="empty">No cases yet</div>`) + `<button class="go" id="wipe" style="width:100%;margin-top:8px">Clear cases</button>`;
+  $("sheet").classList.add("on");
+  $("sheetBody").onclick = (e) => {
+    if (e.target.id==="wipe") { localStorage.removeItem("onsint-cases"); $("sheet").classList.remove("on"); return; }
+    const b = e.target.closest(".case"); if (!b) return;
+    const item = cases.find(c => c.id===b.dataset.id); if (!item) return;
+    $("feed").innerHTML = ""; $("stats").hidden = false; counts = { hit:0, lead:0, miss:0 };
+    for (const ev of item.events || []) emit(ev);
+    $("sheet").classList.remove("on");
+  };
+};
+renderKinds(); renderMods();
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>
